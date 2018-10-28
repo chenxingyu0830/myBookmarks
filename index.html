@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>我的导航</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header></header>
+  <main>
+    <div class="wrapper"  id="mainCreate"></div>
+  </main>
+  <footer></footer>
+  <script>
+    keys = {
+      0: ['q','w','e','r','t','y','u','i','o','p'],
+      1: ['a','s','d','f','g','h','j','k','l'],
+      2: ['z','x','c','v','b','n','m'],
+      'length': 3
+    }
+    hash = {
+      q: 'qq.com',
+      w: 'weibo.com'
+    }
+    // 取出 localStorage 中的 zzz 对应的 hash
+    hashInLocalStorage = JSON.parse(localStorage.getItem('zzz') || 'null')
+    if(hashInLocalStorage){
+      hash = hashInLocalStorage
+      console.log(hash)
+    }
+    
+    // 遍历keys,生成 kbd 标签
+    index = 0
+    while(index< keys['length']){ // 0 1 2
+      divCreate = document.createElement('div')
+      mainCreate.appendChild(divCreate)
+      row = keys[index] // 第一个数组  第二个数组  第三个数组
+      index2 = 0
+      while(index2 < row['length']){  //0-9 0-8 0-6
+        kbdCreate = document.createElement('kbd')
+        kbdCreate.textContent = row[index2]        
+        buttonCreate = document.createElement('button')
+        buttonCreate.textContent = '编辑'
+        buttonCreate.id = row[index2]
+        buttonCreate.onclick = function(aaa){
+          key = console.log(aaa["target"]["id"])         // q w e r t
+          key = aaa["target"]["id"]
+          x = prompt('给我一个网址')   // qq.com
+          hash[key] = x               // hash 变更
+          localStorage.setItem('zzz', JSON.stringify(hash))
+          console.log(localStorage.setItem)
+          console.log(hash)
+        }
+        kbdCreate.appendChild(buttonCreate)
+        divCreate.appendChild(kbdCreate)
+        index2 = index2 + 1
+      }
+
+      index = index + 1 
+
+      document.onkeypress = function(aaa){
+        key = aaa['key']
+        website = hash[key]
+        console.log(website)
+        //location.href = 'http://'+website
+        window.open('http://'+website, '_blank')
+      }
+    }
+  </script>
+</body>
+</html>
