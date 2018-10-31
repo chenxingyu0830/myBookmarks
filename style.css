@@ -6,9 +6,8 @@ a{
   text-decoration: none;
 }
 kbd{
-  border: 1px solid red;
-  width: 6em;
-  height: 6em;
+  width: 4em;
+  height: 4em;
   display: inline-block;
   text-transform: uppercase;
   position: relative;
@@ -16,22 +15,68 @@ kbd{
 kbd > button{
   position: absolute;
   display: none;
-  right: 0;
-  bottom: 0;
+  right: 2px;
+  bottom: 1px;
+  border-radius: 3px;
+  font-size: 8px;
+  color: white;
+  background: linear-gradient(135deg, #292929 0%,#111111 100%);
+  border-color: #333333;
+  outline: none;
 }
 kbd:hover > button{
   display: inline-block;
-
+}
+body{
+  background: red url(./wall.jpg) no-repeat center center;
+  background-size: cover;
 }
 main{
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-#mainXXX{
+#mainCreate{
   display: inline-block;
 }
-#mainXXX > div:nth-child(2){
-  margin-left: 2em;
+#mainCreate > div:nth-child(2){
+  margin-left: -20px;
 }
-#mainXXX > div:nth-child(3){
-  margin-left: 4em;
+#mainCreate > div:nth-child(3){
+  margin-left: -90px;
+}
+.wrapper{
+  background: rgb(255, 255,255,0.15);
+  border-radius: 10px;
+}
+.key{
+  width: 50px; height: 40px; 
+  background: linear-gradient(135deg, #292929 0%,#111111 100%); 
+  border: none;
+  color: #C5C5C5; border-radius: 6px;
+  box-shadow: 0 0 0 1px #1a1b1c,0 0 0 2px rgb(54, 53, 53),0 3px 0 2px #080808; 
+  position: relative;
+  font-size: 16px;  font-family: Helvetica;
+}  
+.key .kbdText{
+  position: absolute;
+  left: 5px;
+  top: 3px;
+}
+.key img{
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  left: 3px;
+  bottom: 0px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px #333 inset;
+}
+.row{
+  margin: 20px;
+}
+.row .key{
+  margin: 0 10px;
 }

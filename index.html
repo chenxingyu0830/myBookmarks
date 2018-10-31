@@ -1,72 +1,152 @@
 <!DOCTYPE html>
 <html lang="zh-Hans">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>我的导航</title>
   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
   <header></header>
   <main>
-    <div class="wrapper"  id="mainCreate"></div>
+    <div class="wrapper" id="mainCreate"></div>
   </main>
   <footer></footer>
   <script>
-    keys = {
-      0: ['q','w','e','r','t','y','u','i','o','p'],
-      1: ['a','s','d','f','g','h','j','k','l'],
-      2: ['z','x','c','v','b','n','m'],
-      'length': 3
-    }
-    hash = {
-      q: 'qq.com',
-      w: 'weibo.com'
-    }
-    // 取出 localStorage 中的 zzz 对应的 hash
-    hashInLocalStorage = JSON.parse(localStorage.getItem('zzz') || 'null')
-    if(hashInLocalStorage){
-      hash = hashInLocalStorage
-      console.log(hash)
-    }
-    
+    // 1.初始化数据
+    var hashA = init()
+    var keys = hashA.keys
+    var hash = hashA.hash
+
+
+    // 2.生成键盘
     // 遍历keys,生成 kbd 标签
-    index = 0
-    while(index< keys['length']){ // 0 1 2
-      divCreate = document.createElement('div')
-      mainCreate.appendChild(divCreate)
-      row = keys[index] // 第一个数组  第二个数组  第三个数组
-      index2 = 0
-      while(index2 < row['length']){  //0-9 0-8 0-6
-        kbdCreate = document.createElement('kbd')
-        kbdCreate.textContent = row[index2]        
-        buttonCreate = document.createElement('button')
-        buttonCreate.textContent = '编辑'
-        buttonCreate.id = row[index2]
-        buttonCreate.onclick = function(aaa){
-          key = console.log(aaa["target"]["id"])         // q w e r t
-          key = aaa["target"]["id"]
-          x = prompt('给我一个网址')   // qq.com
-          hash[key] = x               // hash 变更
-          localStorage.setItem('zzz', JSON.stringify(hash))
-          console.log(localStorage.setItem)
-          console.log(hash)
-        }
-        kbdCreate.appendChild(buttonCreate)
-        divCreate.appendChild(kbdCreate)
-        index2 = index2 + 1
+    generateKeyboard(keys, hash)
+
+
+    // 3.监听用户动作
+    listenToUser(hash)
+
+
+    //下面是工具函数
+    function init() {
+      var keys = {
+        0: ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+        1: ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+        2: ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
+        'length': 3
       }
+      var hash = {
+        q: 'www.qq.com',
+        w: 'www.weibo.com',
+        e: 'h5.ele.me',
+        z: 'www.zhihu.com'
+      }
+      // 取出 localStorage 中的 zzz 对应的 hash
+      var hashInLocalStorage = getFromLocalStorage('zzz')
+      if (hashInLocalStorage) {
+        hash = hashInLocalStorage
+      }
+      return {
+        "keys": keys,
+        "hash": hash
+      }
+    }
 
-      index = index + 1 
+    function getFromLocalStorage(name) {
+      return JSON.parse(localStorage.getItem(name) || 'null')
+    }
 
-      document.onkeypress = function(aaa){
-        key = aaa['key']
-        website = hash[key]
+    function tag(tagName, attributes) {
+      var element = document.createElement(tagName)
+      for (var key in attributes) { // key 为 className, id, textContent
+        element[key] = attributes[key]
+      }
+      return element
+    }
+
+    function createButton(id) {
+      var buttonCreate = tag('button', {
+        textContent: '编辑',
+        id: id
+      })
+      buttonCreate.onclick = function (aaa) {
+        var buttonOnclick = aaa['target'] //拿到button的id
+        var img2 = buttonOnclick.previousSibling //点击button拿到button的哥哥节点
+        key = console.log(buttonOnclick['id']) // q w e r t
+        var key = buttonOnclick['id']
+        var x = prompt('给我一个网址') // qq.com
+        hash[key] = x // hash 变更
+        img2.src = 'http://' + x + '/favicon.ico'
+        img2.onerror = function (fail) { // 如果下载失败
+          console.log('下载失败了')
+          console.log(fail)
+          fail.target.src = 'https://i.loli.net/2017/11/10/5a05afbc5e183.png'
+        }
+        localStorage.setItem('zzz', JSON.stringify(hash))
+      }
+      return buttonCreate
+    }
+
+    function createImage(domain) {
+      var imgCreate = tag('img')
+      if (domain) {
+        imgCreate.src = 'http://' + domain + '/favicon.ico'
+      } else { //如果Logo不存在，则自己给一个图片
+        imgCreate.src = 'https://i.loli.net/2017/11/10/5a05afbc5e183.png'
+      }
+      imgCreate.onerror = function (fail) { // 如果下载失败
+        console.log('下载失败了')
+        console.log(fail)
+        fail.target.src = 'https://i.loli.net/2017/11/10/5a05afbc5e183.png'
+      }
+      return imgCreate
+    }
+
+    function generateKeyboard(keys, hash) {
+      for (var index = 0; index < keys['length']; index++) { // 0 1 2
+        var divCreate = tag('div', {
+          className: 'row'
+        })
+
+        mainCreate.appendChild(divCreate)
+
+        var row = keys[index] // 第一个数组  第二个数组  第三个数组
+        for (var index2 = 0; index2 < row['length']; index2++) { // 0-9 0-8 0-6
+          var spanCreate = tag('span', {
+            textContent: row[index2],
+            className: 'kbdText'
+          })
+
+          var buttonCreate = createButton(row[index2])
+
+          var imgCreate = createImage(hash[row[index2]])
+
+          var kbdCreate = tag('kbd', {
+            className: 'key'
+          })
+
+          kbdCreate.appendChild(spanCreate)
+          kbdCreate.appendChild(imgCreate)
+          kbdCreate.appendChild(buttonCreate)
+
+          divCreate.appendChild(kbdCreate)
+        }
+      }
+    }
+
+    function listenToUser(hash) {
+      document.onkeypress = function (aaa) {
+        var key = aaa['key']
+        var website = hash[key]
         console.log(website)
         //location.href = 'http://'+website
-        window.open('http://'+website, '_blank')
+        window.open('http://' + website, '_blank')
       }
     }
   </script>
 </body>
+
 </html>
